@@ -108,8 +108,25 @@ a.down.down.a.prefix.down <- function (n) {
     1 * a.down.down (n-1)    
 }
 
-paste(sapply (1:10, a.down.down), collapse=  ',')
+paste(sapply (1:15, a.down.down), collapse=  ',')
 
+
+a.down.down.v2 <- function (n) {
+    if (n == 0) return (0)
+    if (n == 1) return (1)
+
+    sum <- 0
+    sum <- a.down.down.v2(n-1)
+    for (i in 2:n) {
+
+        sum <- sum + 
+            choose(n-1, i-1) *  a.down.down (n-i) * a.down.down(i-2)
+    }
+
+    return (sum)
+}
+
+paste(sapply (1:15, a.down.down.v2), collapse=  ',')
 
 a.down_up <- function (n) {
     ## Count leveled binary trees that avoid
@@ -407,7 +424,7 @@ paste(sapply (1:11, a.down.1), collapse=  ',')
 ## +-+-+-+-+-+
 ## |x| | | | |
 ## +-+-+-+-+-+
-## |̱ | | |x| |
+## | | | |x| |
 ## +-+-+-+-+-+
 ## | | | | |x|
 ## +-+-+-+-+-+
