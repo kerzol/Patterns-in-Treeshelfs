@@ -75,9 +75,6 @@ source('debug.R')
 ### avoid down.1m or avoid down.3m  ---- Bell?                            ---- 1,2,5,15,52,203,877,4140,21147,115975,...
 
 
-
-
-
 a.down.down <- function (n) {
     ## Count leveled binary trees that avoid
     ##
@@ -87,46 +84,21 @@ a.down.down <- function (n) {
     ##     \
     ##      .
     ##
-    if (n < 0) return (0)
-    if (n == 0) return (1)
-    sum <- 0
-    for (i in 1:n) {
-
-        sum <- sum + 
-            choose(n-1, i-1) *  a.down.down (n-i) * a.down.down.a.prefix.down (i-1)
-    }
-
-    return (sum)
-}
-
-a.down.down.a.prefix.down <- function (n) {
-    ## avoid down.down and avoid down at beginning
-    if (n < 0) return (0)
     if (n == 0) return (1)
     if (n == 1) return (1)
 
-    1 * a.down.down (n-1)    
-}
-
-paste(sapply (1:15, a.down.down), collapse=  ',')
-
-
-a.down.down.v2 <- function (n) {
-    if (n == 0) return (0)
-    if (n == 1) return (1)
-
     sum <- 0
-    sum <- a.down.down.v2(n-1)
+    sum <- a.down.down(n-1)
     for (i in 2:n) {
 
         sum <- sum + 
-            choose(n-1, i-1) *  a.down.down (n-i) * a.down.down(i-2)
+            choose(n-1, i-1) *  a.down.down (n-i) * a.down.down (i-2)
     }
 
     return (sum)
 }
 
-paste(sapply (1:15, a.down.down.v2), collapse=  ',')
+paste(sapply (1:15, a.down.down), collapse=  ',')
 
 a.down_up <- function (n) {
     ## Count leveled binary trees that avoid
