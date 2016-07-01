@@ -27,7 +27,14 @@ simplify(expand( diff(diff(A)) * A - diff(A)**2 - A**3 ))              # 0
 
 
 B  = (2*(exp(sqrt(2)*x)-1)) / ((2+sqrt(2))-(2-sqrt(2))*exp(sqrt(2)*x))   
-series(B, n = 14)                                                             # 0
-simplify (B - x - 2 *my_integral(B) - my_integral( my_integral (diff(B)*B) )) # 0
-simplify(diff(diff(B)) - 2* diff(B) - diff(B) * B)                            # 0
+series(B, n = 7)
+simplify (B - x - 2 * my_integral(B) - my_integral( my_integral (diff(B)*B) )) # aller etre vrais
+
+## works very long... can we try plutot
+se = series(B, n = 7)
+simplify (se - x - 2 * my_integral(se) - my_integral( my_integral (diff(se)*se) )) # O(x**7)
+
+simplify(diff(diff(B)) - 2* diff(B) - diff(B) * B)                             # 0
+
+
 

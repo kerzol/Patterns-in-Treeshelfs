@@ -109,23 +109,18 @@ a.down_up <- function (n) {
     ##             .     
     ##              \    
     ##               .
-    if (n == 0) return (1)
+    if (n == 0) return (0)
+    if (n == 1) return (1)
     
     sum <- 0
-    for (i in 1:n) {
-
-        if (i == 1) {
-            ## border case
-            sum <- sum + a.down_up (n-1)
-        } else if (i == n) {
-            ## border case
-            sum <- sum + a.down_up (n-1)
-        } else {
-            ## choose places for 0s.
-            sum <- sum + choose(n-2, i-1)  *  a.down_up (n-i) * a.down_up (i-1) ## 1....
-            ## 0.... cannot exists, caz it will make down_up
-        }
-
+    ## border cases
+    sum <- 2 * a.down_up (n-1)
+    
+    for (i in 2:(n-1)) {
+        
+        ## choose places for 0s.
+        sum <- sum + choose(n-2, i-1)  *  a.down_up (n-i) * a.down_up (i-1) ## 1....
+        ## 0.... cannot exists, caz it will make down_up
     }
 
     return (sum)
@@ -133,7 +128,6 @@ a.down_up <- function (n) {
 }
 
 paste(sapply (1:10, a.down_up), collapse=  ',')
-
 
 
 
