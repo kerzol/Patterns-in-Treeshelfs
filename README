@@ -1,1 +1,4 @@
-soon
+
+See ./src/treeshelf-patterns.R for numerical calculations.
+
+See ./src/egfs.py for symbolic calculations, including integral and diffirential equations
