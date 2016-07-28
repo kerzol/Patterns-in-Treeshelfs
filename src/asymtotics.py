@@ -3,7 +3,7 @@ import operator
 from sympy import *
 from __future__ import division
 from sympy import *
-x, y, z, t, a, a2, residue, residue2 = symbols('x y z t a a2 residue residue2')
+x, y, z, t, pole, pole2, residue, residue2 = symbols('x y z t pole pole2 residue residue2')
 k, m, n = symbols('k m n', integer=True)
 f, g, h = symbols('f g h', cls=Function)
 asym_f, asym_g, asym_h = symbols('asym_f asym_g asym_h', cls=Function)
@@ -18,7 +18,6 @@ asym_f, asym_g, asym_h = symbols('asym_f asym_g asym_h', cls=Function)
 
 ### Theorem 2. --- multivariate TODO
 ### Corollary 3. --- A000111
-
 ### Corollary 4.
 f = - cos(z)**2 * z  +  cos(z)**2  +  sin(z) * cos(z)  +  2*sin(z)*z  +  cos(z) - 2*sin(z)  + 2*z - 2
 g = cos(z)**3
@@ -27,7 +26,7 @@ g = cos(z)**3
 h = f/g
 
 ## calculate some coefficients
-NUMBER_OF_COEFFS = 200
+NUMBER_OF_COEFFS = 30
 coeffs = Poly(series(h,n = NUMBER_OF_COEFFS)).coeffs()
 ## reverse the list
 coeffs.reverse()
@@ -37,22 +36,19 @@ factorials = list(map (factorial, range(2, NUMBER_OF_COEFFS)))
 coeffs = list(map (operator.mul, coeffs, factorials ))
 
 ## Poles are pi/2 + pi*k for any k in Z
-## dominant pole a
-a = pi / 2 
-## TODO: What about another pole with the same absolute value -pi/2 ?
-## order of pole is m=3, so
+## dominant pole
+pole = pi / 2 
+## of order 3, so
 m = 3
-residue = (-1)**m * m * f.subs(z, a) / diff(g, z, m).subs(z,a)
-a2 = pi/2 - 2 * pi
-residue2 = (-1)**m * m * f.subs(z, a2) / diff(g, z, m).subs(z,a2)
+residue = (-1)**m * m * f.subs(z, pole) / diff(g, z, m).subs(z,pole)
+pole2 = pi/2 - 2 * pi
+residue2 = (-1)**m * m * f.subs(z, pole2) / diff(g, z, m).subs(z,pole2)
 ## residue2 == 0 , so
 
-##residue = limit(h * (a - z)**3, z, a)
+##residue = limit(h * (a - z)**3, z, a)??? FIXME!!!!1111 READ MORE ABOUT RESIDUES (m-1)! somewhere
 asym_h = factorial(n) * (
-    (1/a)**n * n**(m-1) * residue / a**m
-#  + (1/a2)**n * n**(m-1) * residue2 / a2**m 
+    (1/pole)**n * n**(m-1) * residue / pole**m
 )
-  
 
 ## new we calculate approximation to coefficients ...
 asymtotics = list(map(lambda nn: round(asym_h.subs(n, nn).evalf()), range(2, NUMBER_OF_COEFFS) ))
@@ -61,13 +57,40 @@ asymtotics = list(map(lambda nn: round(asym_h.subs(n, nn).evalf()), range(2, NUM
 ratios = list(map( lambda x: x.evalf(), list(map(operator.truediv, coeffs, asymtotics))))
 plt.plot(ratios); plt.show()
 
-## another comparison
-errors = list(map(operator.sub, coeffs, asymtotics))
-plt.plot(errors); plt.show()
-relative_errors = list(map (operator.truediv, errors, coeffs ))
-relative_errors = list(map (lambda x : x.evalf(), relative_errors))
-plt.plot(relative_errors); plt.show()
+
 
 ### Theorem 3. --- multivariate TODO
 ### Corollary 5. --- A131178
-### Corollary 6. --- TODO
+### Corollary 6.
+
+f = (4*z-4)*exp(sqrt(2)*z)-(sqrt(2)-2)*exp(2*sqrt(2)*z)+2+sqrt(2)
+g = ((sqrt(2)-2)*exp(sqrt(2)*z)+2+sqrt(2))**2
+h = f/g
+
+## calculate some coefficients
+NUMBER_OF_COEFFS = 20
+coeffs = Poly(series(h,n = NUMBER_OF_COEFFS)).coeffs()
+## reverse the list
+coeffs.reverse()
+## and remove first coefficient 1 that corresponds to O(n**k)
+coeffs.pop(0)
+factorials = list(map (factorial, range(2, NUMBER_OF_COEFFS)))
+coeffs = list(map (operator.mul, coeffs, factorials ))
+
+## Poles are pi/2 + pi*k for any k in Z
+## dominant pole
+pole = sqrt(2)*log(2*sqrt(2) + 3) / 2
+## of order 2, so
+m = 2
+residue = (-1)**m * m * f.subs(z, pole) / diff(g, z, m).subs(z,pole)
+residue = simplify(residue)
+asym_h = factorial(n) * (
+    (1/pole)**n * n**(m-1) * residue / pole**m
+)
+
+## new we calculate approximation to coefficients ...
+asymtotics = list(map(lambda nn: round(asym_h.subs(n, nn).evalf()), range(2, NUMBER_OF_COEFFS) ))
+
+## and compare them with real values
+ratios = list(map( lambda x: x.evalf(), list(map(operator.truediv, coeffs, asymtotics))))
+plt.plot(ratios); plt.show()
