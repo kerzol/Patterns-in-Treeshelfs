@@ -22,10 +22,12 @@ asym_f, asym_g, asym_h = symbols('asym_f asym_g asym_h', cls=Function)
 ### Corollary 4.
 f = - cos(z)**2 * z  +  cos(z)**2  +  sin(z) * cos(z)  +  2*sin(z)*z  +  cos(z) - 2*sin(z)  + 2*z - 2
 g = cos(z)**3
+## f = -(sin(z)-z* cos(z)+cos(z)-1)
+## g = (sin(z)-1)**2
 h = f/g
 
 ## calculate some coefficients
-NUMBER_OF_COEFFS = 20
+NUMBER_OF_COEFFS = 200
 coeffs = Poly(series(h,n = NUMBER_OF_COEFFS)).coeffs()
 ## reverse the list
 coeffs.reverse()
@@ -36,7 +38,7 @@ coeffs = list(map (operator.mul, coeffs, factorials ))
 
 ## Poles are pi/2 + pi*k for any k in Z
 ## dominant pole a
-a = pi / 2
+a = pi / 2 
 ## TODO: What about another pole with the same absolute value -pi/2 ?
 ## order of pole is m=3, so
 m = 3
@@ -45,7 +47,7 @@ a2 = pi/2 - 2 * pi
 residue2 = (-1)**m * m * f.subs(z, a2) / diff(g, z, m).subs(z,a2)
 ## residue2 == 0 , so
 
-residue = limit(h * (a2 - z)**3, z, a2)
+##residue = limit(h * (a - z)**3, z, a)
 asym_h = factorial(n) * (
     (1/a)**n * n**(m-1) * residue / a**m
 #  + (1/a2)**n * n**(m-1) * residue2 / a2**m 
@@ -56,6 +58,10 @@ asym_h = factorial(n) * (
 asymtotics = list(map(lambda nn: round(asym_h.subs(n, nn).evalf()), range(2, NUMBER_OF_COEFFS) ))
 
 ## and compare them with real values
+ratios = list(map( lambda x: x.evalf(), list(map(operator.truediv, coeffs, asymtotics))))
+plt.plot(ratios); plt.show()
+
+## another comparison
 errors = list(map(operator.sub, coeffs, asymtotics))
 plt.plot(errors); plt.show()
 relative_errors = list(map (operator.truediv, errors, coeffs ))
